@@ -1,0 +1,20 @@
+# example profiles.yml file
+redshift_profile:
+  target: dev
+  outputs:
+    dev:
+      type: redshift
+      host: localhost
+      user: tharvey
+      password: {{ env_var('REDSHIFT_PASSWORD') }}
+      port: 55091
+      dbname: sandbox_tharvey
+      schema: public
+      threads: 4
+
+sqlite_profile:
+  # See https://github.com/codeforkjeff/dbt-sqlite
+  target: dev
+  outputs:
+    dev:
+      type: sqlite
