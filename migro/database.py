@@ -26,21 +26,14 @@ class SqliteDatabase():
         return sqlite3.connect('./tests/demo.db')
 
     def create_migrations_table(self) -> bool:
-        try:
-            self.execute('''
-                create table migrations
-                (
-                    id integer primary key,
-                    migration varchar(2000) not null,
-                    applied_at timestamp default current_timestamp not null
-                )
-            ''')
-            return True
-        except sqlite3.OperationalError as e:
-            if str(e) == 'table migrations already exists':
-                return False
-            else:
-                raise e
+        self.execute('''
+            create table if not exists migrations
+            (
+                id integer primary key,
+                migration varchar(2000) not null,
+                applied_at timestamp default current_timestamp not null
+            )
+        ''')
 
     def execute(self, sql):
         con = self._get_connection()
@@ -86,17 +79,14 @@ class RedshiftDatabase():
         con.close()
 
     def create_migrations_table(self):
-        try:
-            self.execute(f"""
-                create table migrations
-                (
-                    id int identity not null,
-                    migration varchar(2000) not null,
-                    applied_at timestamp default getdate() not null
-                )
-            """)
-        except psycopg2.errors.DuplicateTable:
-            pass
+        self.execute(f"""
+            create table if not exists migrations
+            (
+                id int identity not null,
+                migration varchar(2000) not null,
+                applied_at timestamp default getdate() not null
+            )
+        """)
 
     def get_migrations(self):
         con = self._get_connection()

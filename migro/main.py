@@ -12,8 +12,7 @@ def cli():
 def up(profile, dry_run):
     migrations_repo = MigrationRepository(profile)
 
-    if migrations_repo.create_migrations_table():
-        click.echo(click.style('Created migrations table.', fg='green'))
+    migrations_repo.create_migrations_table()
 
     for migration in migrations_repo.all():
 

@@ -67,7 +67,7 @@ class MigrationRepository:
         self._log_migration(migration)
 
     def create_migrations_table(self) -> bool:
-        return self.db.create_migrations_table()
+        self.db.create_migrations_table()
 
 
     def make(self, name) -> str:
