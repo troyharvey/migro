@@ -46,7 +46,7 @@ class SqliteDatabase():
         con = self._get_connection()
         con.row_factory = sqlite3.Row
         cur = con.cursor()
-        cur.execute("SELECT * FROM migrations ORDER BY id ASC")
+        cur.execute("SELECT * FROM migrations ORDER BY migration ASC")
         migrations = cur.fetchall()
         con.close()
         return [dict(migration) for migration in migrations]
@@ -91,7 +91,7 @@ class RedshiftDatabase():
     def get_migrations(self):
         con = self._get_connection()
         with con.cursor() as cur:
-            cur.execute("SELECT id,migration,applied_at FROM public.migrations ORDER BY id ASC")
+            cur.execute("SELECT id, migration, applied_at FROM public.migrations ORDER BY migration ASC")
             migrations = cur.fetchall()
             cur.close()
         con.close()
