@@ -6,27 +6,35 @@ from migro.migrations import MigrationRepository
 def cli():
     pass
 
-@click.option('--profile')
-@click.option('--dry-run', default=False)
+
+@click.option('--pretend/--no-pretend', default=False)
+@click.option('--limit', type=int)
+@click.option('--dbt-profile')
 @click.command()
-def up(profile, dry_run):
-    migrations_repo = MigrationRepository(profile)
+def up(pretend, limit, dbt_profile):
+    applied = 0
+    migrations_repo = MigrationRepository(dbt_profile)
 
     migrations_repo.create_migrations_table()
 
     for migration in migrations_repo.all():
 
+        if limit and applied >= limit:
+            break
+
         if migration.applied_at:
             continue
 
-        sql = migration.sql()
-
         click.echo(click.style(f"Migrating: {migration.file_path}", fg='yellow'))
+
+        sql = migration.sql()
         click.echo(f"— {sql}")
 
-        if not dry_run:
+        if not pretend:
             migrations_repo.apply(migration)
             click.echo(click.style(f"Migrated:  {migration.file_path}", fg='green'))
+
+        applied += 1
 
 
 @click.command()

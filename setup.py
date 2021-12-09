@@ -2,7 +2,12 @@ from setuptools import find_packages, setup
 
 setup(
     name='migro',
-    version='0.0.1',
+    version='0.0.2',
+    description='Redshift Data Warehouse migrations for dbt.',
+    author='Troy Harvey',
+    author_email='troyharvey@gmail.com',
+    license='MIT',
+    url='https://github.com/troyharvey/migro',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[

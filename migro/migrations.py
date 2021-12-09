@@ -1,13 +1,21 @@
+import os
+import random
+import string
+
 from datetime import datetime
 from dataclasses import dataclass
-import os
 
 from migro import jinja, database
 
 MIGRATION_FILE_PATH = './migrations'
 
+
 def generate_password():
-    return os.urandom(12).hex()
+    """
+    Generate a random password with lowercase, uppercase, numbers and special characters
+    """
+    return ''.join(random.choice(string.ascii_letters + string.digits + '$%@') for _ in range(32))
+
 
 @dataclass
 class Migration:
@@ -17,7 +25,10 @@ class Migration:
     file_path: str = None
 
     def sql(self):
-        sql = jinja.render_jinja_template(f"{MIGRATION_FILE_PATH}/{self.file_path}", env='production', password=generate_password())
+        sql = jinja.render_jinja_template(
+            f"{MIGRATION_FILE_PATH}/{self.file_path}",
+            password=generate_password()
+        )
         return sql.strip()
 
 

@@ -4,7 +4,7 @@ from migro import jinja
 
 
 def get_output(profile=None):
-    profiles = jinja.render_jinja_template('profiles.yml', env='production')
+    profiles = jinja.render_jinja_template('profiles.yml')
     profiles = yaml.safe_load(profiles)
 
     for profile_name, p in profiles.items():

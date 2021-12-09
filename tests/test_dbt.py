@@ -1,5 +1,6 @@
 from migro import dbt
 
+
 def test_output():
     output = dbt.get_output()
     assert output['type'] == 'redshift'
