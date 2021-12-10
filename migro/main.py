@@ -4,14 +4,17 @@ from migro.migrations import MigrationRepository
 
 @click.group()
 def cli():
+    """Data Warehouse migrations"""
     pass
 
 
-@click.option('--pretend/--no-pretend', default=False)
-@click.option('--limit', type=int)
-@click.option('--dbt-profile')
+@click.option('--pretend/--no-pretend', default=False, help='Show the queries that migro would run')
+@click.option('--limit', type=int, help='Limit the number of migrations to run')
+@click.option('--dbt-profile', help='dbt profile key in profiles.yml')
 @click.command()
 def up(pretend, limit, dbt_profile):
+    """Run the unapplied SQL in the migrations directory"""
+
     applied = 0
     migrations_repo = MigrationRepository(dbt_profile)
 
@@ -40,6 +43,8 @@ def up(pretend, limit, dbt_profile):
 @click.command()
 @click.argument('name')
 def make(name):
+    """Create a new migration file. For example, migro make add_user_tharvey"""
+
     migrations_repo = MigrationRepository()
     migration_file = migrations_repo.make(name)
 

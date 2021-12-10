@@ -62,7 +62,7 @@ class MigrationRepository:
                 migration_record = migration_records.pop(0)
 
                 if migration.file_path != migration_record['migration']:
-                    raise Exception(f'Migrations table out of sync with migrations on the filesystem. {migration.file_path} != {migration.name}')
+                    raise Exception(f"Migrations table out of sync with migrations on the filesystem. {migration.file_path} != {migration_record['migration']}")
 
                 migration.id = migration_record['id']
                 migration.name = migration_record['migration']
