@@ -5,6 +5,7 @@ from setuptools import find_packages, setup
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
+
 setup(
     name='migro',
     version='0.0.5',
@@ -23,6 +24,12 @@ setup(
         'psycopg2',
         'pyyaml',
     ],
+    extras_require={
+        'dev': [
+            'black',
+            'twine',
+        ]
+    },
     entry_points={
         'console_scripts': [
             'migro = migro.main:cli',
