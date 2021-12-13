@@ -2,7 +2,7 @@
 
 1. Install Python dependencies.
 
-        pip install .['dev']
+        pip install --editable .['dev']
 
 1. Build a distribution wheel.
 

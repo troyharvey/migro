@@ -10,15 +10,6 @@ from migro import jinja, database
 MIGRATION_FILE_PATH = "./migrations"
 
 
-def generate_password():
-    """
-    Generate a random password with lowercase, uppercase, numbers and special characters
-    """
-    return "".join(
-        random.choice(string.ascii_letters + string.digits + "$%@") for _ in range(32)
-    )
-
-
 @dataclass
 class Migration:
     id: int = None
@@ -26,9 +17,18 @@ class Migration:
     applied_at: datetime = None
     file_path: str = None
 
+    def _password(self):
+        """
+        Generate a random password with lowercase, uppercase, numbers and special characters
+        """
+        return "".join(
+            random.choice(string.ascii_letters + string.digits + "$%@")
+            for _ in range(32)
+        )
+
     def sql(self):
         sql = jinja.render_jinja_template(
-            f"{MIGRATION_FILE_PATH}/{self.file_path}", password=generate_password()
+            f"{MIGRATION_FILE_PATH}/{self.file_path}", password=self._password()
         )
         return sql.strip()
 
@@ -79,7 +79,7 @@ class MigrationRepository:
             self.db.execute(sql)
         self._log_migration(migration)
 
-    def create_migrations_table(self) -> bool:
+    def create_migrations_table(self):
         self.db.create_migrations_table()
 
     def make(self, name) -> str:
