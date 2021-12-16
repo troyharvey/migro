@@ -2,7 +2,7 @@
 
 Redshift Data Warehouse migrations for dbt.
 
-[![tests](https://github.com/troyharvey/migro/actions/workflows/pytest/badge.svg)](https://github.com/troyharvey/migro/actions)
+[![tests](https://github.com/troyharvey/migro/actions/workflows/pytest.yml/badge.svg)](https://github.com/troyharvey/migro/actions)
 [![codecov](https://codecov.io/gh/troyharvey/migro/branch/main/graph/badge.svg?token=TU861V5K46)](https://codecov.io/gh/troyharvey/migro)
 
 ## Setup
