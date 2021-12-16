@@ -28,6 +28,7 @@ setup(
         'dev': [
             'black',
             'pytest',
+            'pytest-cov',
             'twine',
         ]
     },
