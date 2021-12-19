@@ -2,6 +2,7 @@ import psycopg2
 import psycopg2.extras
 import sqlite3
 from dataclasses import dataclass
+from typing import ClassVar
 
 from migro import dbt
 
@@ -23,22 +24,16 @@ def get_database_instance(profile=None):
     if db_config["type"] == "sqlite":
         return SqliteDatabase()
 
+@dataclass
+class Database:
 
-class SqliteDatabase:
+    MIGRATIONS_TABLE_SQL: ClassVar[str]
+
     def _get_connection(self):
-        return sqlite3.connect("./tests/demo.db")
+        raise NotImplementedError
 
-    def create_migrations_table(self) -> bool:
-        self.execute(
-            """
-            create table if not exists migrations
-            (
-                id integer primary key,
-                migration varchar(2000) not null,
-                applied_at timestamp default current_timestamp not null
-            )
-        """
-        )
+    def create_migrations_table(self):
+        raise NotImplementedError
 
     def execute(self, sql):
         con = self._get_connection()
@@ -48,22 +43,54 @@ class SqliteDatabase:
         con.close()
 
     def get_migrations(self):
+        raise NotImplementedError
+
+
+@dataclass
+class SqliteDatabase(Database):
+
+    MIGRATIONS_TABLE_SQL: ClassVar[str] = f"""
+        create table if not exists migrations
+        (
+            id integer primary key,
+            migration varchar(2000) not null,
+            applied_at timestamp default current_timestamp not null
+        )
+    """
+
+    def _get_connection(self):
+        return sqlite3.connect("./tests/demo.db")
+
+    def create_migrations_table(self) -> bool:
+        self.execute(self.MIGRATIONS_TABLE_SQL)
+
+    def get_migrations(self):
         con = self._get_connection()
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         cur.execute("SELECT * FROM migrations ORDER BY migration ASC")
         migrations = cur.fetchall()
+        cur.close()
         con.close()
         return [dict(migration) for migration in migrations]
 
 
 @dataclass
-class RedshiftDatabase:
+class RedshiftDatabase(Database):
     host: str
     user: str
     password: str
     port: int
     dbname: str
+
+    MIGRATIONS_TABLE_SQL: ClassVar[str] = f"""
+        create table if not exists migrations
+        (
+            id int identity not null,
+            migration varchar(2000) not null,
+            applied_at timestamp default getdate() not null
+        )
+    """
 
     def _get_connection(self):
         return psycopg2.connect(
@@ -75,25 +102,8 @@ class RedshiftDatabase:
             cursor_factory=psycopg2.extras.DictCursor,
         )
 
-    def execute(self, sql):
-        con = self._get_connection()
-        cursor = con.cursor()
-        cursor.execute(sql)
-        con.commit()
-        cursor.close()
-        con.close()
-
     def create_migrations_table(self):
-        self.execute(
-            f"""
-            create table if not exists migrations
-            (
-                id int identity not null,
-                migration varchar(2000) not null,
-                applied_at timestamp default getdate() not null
-            )
-        """
-        )
+        self.execute(self.MIGRATIONS_TABLE_SQL)
 
     def get_migrations(self):
         con = self._get_connection()
