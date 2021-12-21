@@ -5,7 +5,6 @@ from migro.migrations import MigrationRepository
 @click.group()
 def cli():
     """Data Warehouse migrations"""
-    pass
 
 
 @click.option(
