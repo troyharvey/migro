@@ -1,7 +1,9 @@
 from migro import migrations
+from pathlib import Path
 import os
 import re
 import glob
+import pytest
 
 PASSWORD_REGEX = "[A-Za-z0-9$%@]{32}"
 
@@ -51,6 +53,11 @@ class TestMigrationRepository:
         # There should be no migration left to apply
         for m in migrations_repo.all():
             assert m.applied_at is not None
+
+        # Force migrations file system out of sync with migrations table
+        os.rename(migration_file, f"{migrations.MIGRATION_FILE_PATH}/foo.sql")
+        with pytest.raises(Exception, match="Migrations table out of sync with migrations on the filesystem."):
+            migrations_repo.all()
 
 
 class TestMigration:
