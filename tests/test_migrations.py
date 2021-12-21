@@ -33,16 +33,22 @@ class TestMigrationRepository:
         assert [] == migrations_repo.all()
 
         # Test making a migration file
-        migrations_repo.make("create_jdoe_user")
+        migration_file = migrations_repo.make("create_attribution_table")
 
-        # Does jdoe migration show up in the file listing?
+        # Add SQL statement to migration file
+        with open(migration_file, "w") as f:
+            f.write("CREATE TABLE attribution(foo INT);")
+
+        # Does the migration show up in the file listing?
         for f in migrations_repo._get_migration_files():
-            assert f.endswith("_create_jdoe_user.sql")
+            assert f.endswith("_create_attribution_table.sql")
 
+        # Test applying the migration
         for m in migrations_repo.all():
-            assert m.file_path.endswith("_create_jdoe_user.sql")
+            assert m.file_path.endswith("_create_attribution_table.sql")
             migrations_repo.apply(m)
 
+        # There should be no migration left to apply
         for m in migrations_repo.all():
             assert m.applied_at is not None
 
