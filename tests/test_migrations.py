@@ -1,5 +1,4 @@
 from migro import migrations
-from pathlib import Path
 import os
 import re
 import glob
@@ -12,7 +11,7 @@ class TestMigrationRepository:
     def setup_class(self):
         try:
             os.remove("./tests/demo.db")
-        except:
+        except Exception:
             pass
 
         for f in glob.glob(os.path.join(migrations.MIGRATION_FILE_PATH, "*.sql")):
@@ -21,7 +20,7 @@ class TestMigrationRepository:
     def teardown_class(self):
         try:
             os.remove("./tests/demo.db")
-        except:
+        except Exception:
             pass
 
         for f in glob.glob(os.path.join(migrations.MIGRATION_FILE_PATH, "*.sql")):
@@ -56,7 +55,10 @@ class TestMigrationRepository:
 
         # Force migrations file system out of sync with migrations table
         os.rename(migration_file, f"{migrations.MIGRATION_FILE_PATH}/foo.sql")
-        with pytest.raises(Exception, match="Migrations table out of sync with migrations on the filesystem."):
+        with pytest.raises(
+            Exception,
+            match="Migrations table out of sync with migrations on the filesystem.",
+        ):
             migrations_repo.all()
 
 
@@ -68,7 +70,7 @@ class TestMigration:
     def teardown_method(self):
         try:
             os.remove(f"{migrations.MIGRATION_FILE_PATH}/test.sql")
-        except:
+        except Exception:
             pass
 
     def test_migrations_path_constant(self):

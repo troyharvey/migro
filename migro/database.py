@@ -24,6 +24,7 @@ def get_database_instance(profile=None):
     if db_config["type"] == "sqlite":
         return SqliteDatabase()
 
+
 @dataclass
 class Database:
 
@@ -49,7 +50,9 @@ class Database:
 @dataclass
 class SqliteDatabase(Database):
 
-    MIGRATIONS_TABLE_SQL: ClassVar[str] = f"""
+    MIGRATIONS_TABLE_SQL: ClassVar[
+        str
+    ] = """
         create table if not exists migrations
         (
             id integer primary key,
@@ -83,7 +86,9 @@ class RedshiftDatabase(Database):
     port: int
     dbname: str
 
-    MIGRATIONS_TABLE_SQL: ClassVar[str] = f"""
+    MIGRATIONS_TABLE_SQL: ClassVar[
+        str
+    ] = """
         create table if not exists migrations
         (
             id int identity not null,
@@ -108,9 +113,12 @@ class RedshiftDatabase(Database):
     def get_migrations(self):
         con = self._get_connection()
         with con.cursor() as cur:
-            cur.execute(
-                "SELECT id, migration, applied_at FROM public.migrations ORDER BY migration ASC"
-            )
+            cur.execute((
+                """
+                SELECT id, migration, applied_at
+                FROM public.migrations ORDER BY migration ASC
+                """
+            ))
             migrations = cur.fetchall()
             cur.close()
         con.close()

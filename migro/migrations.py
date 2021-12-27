@@ -19,7 +19,8 @@ class Migration:
 
     def _password(self):
         """
-        Generate a random password with lowercase, uppercase, numbers and special characters
+        Generate a random password with lowercase, uppercase, numbers,
+        and special characters
         """
         return "".join(
             random.choice(string.ascii_letters + string.digits + "$%@")
@@ -62,9 +63,12 @@ class MigrationRepository:
                 migration_record = migration_records.pop(0)
 
                 if migration.file_path != migration_record["migration"]:
-                    raise Exception(
-                        f"Migrations table out of sync with migrations on the filesystem. {migration.file_path} != {migration_record['migration']}"
-                    )
+                    raise Exception((
+                        f"""
+                        Migrations table out of sync with migrations on the filesystem.
+                        {migration.file_path} != {migration_record['migration']}
+                        """
+                    ))
 
                 migration.id = migration_record["id"]
                 migration.name = migration_record["migration"]
