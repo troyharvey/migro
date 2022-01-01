@@ -1,8 +1,15 @@
+import click
+import os
 import yaml
 from migro import jinja
 
 
 def get_output(profile=None):
+
+    if not os.path.isfile("profiles.yml"):
+        click.echo(click.style("Missing dbt profiles.yml", fg="red"))
+        exit()
+
     profiles = jinja.render_jinja_template("profiles.yml")
     profiles = yaml.safe_load(profiles)
 
