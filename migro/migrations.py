@@ -1,5 +1,6 @@
 import os
 import random
+import sqlparse
 import string
 
 from datetime import datetime
@@ -31,7 +32,7 @@ class Migration:
         sql = jinja.render_jinja_template(
             f"{MIGRATION_FILE_PATH}/{self.file_path}", password=self._password()
         )
-        return sql.strip()
+        return sqlparse.format(sql, strip_comments=True).strip()
 
 
 class MigrationRepository:
