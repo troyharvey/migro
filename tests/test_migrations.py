@@ -65,7 +65,8 @@ class TestMigrationRepository:
 class TestMigration:
     def setup_method(self):
         with open(f"{migrations.MIGRATION_FILE_PATH}/test.sql", "w") as f:
-            f.write("""
+            f.write(
+                """
                 -- This comment should be removed when sql is rendered
                 select '{{password}}' as pw;
                 """
