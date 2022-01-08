@@ -65,7 +65,11 @@ class TestMigrationRepository:
 class TestMigration:
     def setup_method(self):
         with open(f"{migrations.MIGRATION_FILE_PATH}/test.sql", "w") as f:
-            f.write("select '{{password}}' as pw;")
+            f.write("""
+                -- This comment should be removed when sql is rendered
+                select '{{password}}' as pw;
+                """
+            )
 
     def teardown_method(self):
         try:
@@ -85,4 +89,5 @@ class TestMigration:
     def test_sql(self):
         m = migrations.Migration()
         m.file_path = "test.sql"
-        assert re.match(f"^select '{PASSWORD_REGEX}' as pw;$", m.sql())
+        sql = m.sql()
+        assert re.match(f"^select '{PASSWORD_REGEX}' as pw;$", sql)
