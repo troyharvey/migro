@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='migro',
-    version='0.0.7',
+    version='0.0.8',
     description='Redshift Data Warehouse migrations for dbt.',
     author='Troy Harvey',
     author_email='troyharvey@gmail.com',

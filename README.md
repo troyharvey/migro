@@ -1,6 +1,6 @@
 # migro
 
-Redshift Data Warehouse migrations for dbt.
+Data Warehouse migrations for dbt.
 
 [![tests](https://github.com/troyharvey/migro/actions/workflows/pytest.yml/badge.svg)](https://github.com/troyharvey/migro/actions)
 [![codecov](https://codecov.io/gh/troyharvey/migro/branch/main/graph/badge.svg?token=TU861V5K46)](https://codecov.io/gh/troyharvey/migro)
@@ -29,6 +29,6 @@ Redshift Data Warehouse migrations for dbt.
 
         migro up
 
-1. Query the new migrations table in Redshift to see the migration history.
+1. Query the new migrations table to see the migration history.
 
         select * from public.migrations order by id;
