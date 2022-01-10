@@ -23,6 +23,7 @@ setup(
         'Jinja2',
         'psycopg2',
         'pyyaml',
+        'snowflake-connector-python',
         'sqlparse',
     ],
     extras_require={

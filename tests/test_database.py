@@ -40,3 +40,17 @@ def test_redshift_database(psycopg2_mock):
     db.get_migrations()
 
     psycopg2_mock.assert_called()
+
+@mock.patch("snowflake.connector.connect")
+def test_snowflake_database(snowflake_mock):
+    db = database.SnowflakeDatabase(
+        account="account",
+        user="user",
+        password="password",
+        database="database",
+    )
+
+    db.create_migrations_table()
+    db.get_migrations()
+
+    snowflake_mock.assert_called()
