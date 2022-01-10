@@ -1,5 +1,6 @@
 import psycopg2
 import psycopg2.extras
+import snowflake.connector
 import sqlite3
 from dataclasses import dataclass
 from typing import ClassVar
@@ -23,6 +24,14 @@ def get_database_instance(profile=None):
 
     if db_config["type"] == "sqlite":
         return SqliteDatabase()
+
+    if db_config["type"] == "snowflake":
+        return SnowflakeDatabase(
+            account=db_config["account"],
+            user=db_config["user"],
+            password=db_config["password"],
+            database=db_config["database"],
+        )
 
 
 @dataclass
@@ -113,12 +122,60 @@ class RedshiftDatabase(Database):
     def get_migrations(self):
         con = self._get_connection()
         with con.cursor() as cur:
-            cur.execute((
-                """
+            cur.execute(
+                (
+                    """
                 SELECT id, migration, applied_at
                 FROM public.migrations ORDER BY migration ASC
                 """
-            ))
+                )
+            )
+            migrations = cur.fetchall()
+            cur.close()
+        con.close()
+        return migrations
+
+
+@dataclass
+class SnowflakeDatabase(Database):
+    account: str
+    user: str
+    password: str
+    database: str
+
+    MIGRATIONS_TABLE_SQL: ClassVar[
+        str
+    ] = """
+        create table if not exists PUBLIC.migrations
+        (
+            id int identity not null,
+            migration varchar(2000) not null,
+            applied_at timestamp default current_timestamp() not null
+        )
+    """
+
+    def _get_connection(self):
+        return snowflake.connector.connect(
+            user=self.user,
+            password=self.password,
+            account=self.account,
+            database=self.database,
+        )
+
+    def create_migrations_table(self):
+        self.execute(self.MIGRATIONS_TABLE_SQL)
+
+    def get_migrations(self):
+        con = self._get_connection()
+        with con.cursor(snowflake.connector.DictCursor) as cur:
+            cur.execute(
+                (
+                    """
+                SELECT ID as "id", MIGRATION as "migration", APPLIED_AT as "applied_at"
+                FROM public.migrations ORDER BY migration ASC
+                """
+                )
+            )
             migrations = cur.fetchall()
             cur.close()
         con.close()
