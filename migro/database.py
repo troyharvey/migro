@@ -122,16 +122,19 @@ class RedshiftDatabase(Database):
     def get_migrations(self):
         con = self._get_connection()
         with con.cursor() as cur:
-            cur.execute((
-                """
+            cur.execute(
+                (
+                    """
                 SELECT id, migration, applied_at
                 FROM public.migrations ORDER BY migration ASC
                 """
-            ))
+                )
+            )
             migrations = cur.fetchall()
             cur.close()
         con.close()
         return migrations
+
 
 @dataclass
 class SnowflakeDatabase(Database):
@@ -165,12 +168,14 @@ class SnowflakeDatabase(Database):
     def get_migrations(self):
         con = self._get_connection()
         with con.cursor(snowflake.connector.DictCursor) as cur:
-            cur.execute((
-                """
+            cur.execute(
+                (
+                    """
                 SELECT ID as "id", MIGRATION as "migration", APPLIED_AT as "applied_at"
                 FROM public.migrations ORDER BY migration ASC
                 """
-            ))
+                )
+            )
             migrations = cur.fetchall()
             cur.close()
         con.close()

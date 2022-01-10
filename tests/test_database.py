@@ -41,6 +41,7 @@ def test_redshift_database(psycopg2_mock):
 
     psycopg2_mock.assert_called()
 
+
 @mock.patch("snowflake.connector.connect")
 def test_snowflake_database(snowflake_mock):
     db = database.SnowflakeDatabase(
