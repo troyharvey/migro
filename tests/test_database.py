@@ -12,9 +12,11 @@ def test_get_redshift_database_instance():
     db = database.get_database_instance("redshift_profile")
     assert isinstance(db, database.RedshiftDatabase)
 
+
 def test_get_snowflake_database_instance():
     db = database.get_database_instance("snowflake_profile")
     assert isinstance(db, database.SnowflakeDatabase)
+
 
 def test_database_not_implemented_errors():
     db = database.Database()
