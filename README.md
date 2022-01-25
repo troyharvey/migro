@@ -32,3 +32,8 @@ Data Warehouse migrations for dbt.
 1. Query the new migrations table to see the migration history.
 
         select * from public.migrations order by id;
+
+## Data Warehouse Support
+
+* Redshift
+* Snowflake
