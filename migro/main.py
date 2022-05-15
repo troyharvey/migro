@@ -8,7 +8,8 @@ def cli():
 
 
 @click.option(
-    "--pretend/--no-pretend",
+    "--pretend",
+    is_flag=True,
     default=False,
     help="Show the queries that migro would run",
 )
