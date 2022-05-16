@@ -35,5 +35,5 @@ Data Warehouse migrations for dbt.
 
 ## Data Warehouse Support
 
-* Redshift
-* Snowflake
+* [Redshift](https://aws.amazon.com/redshift/)
+* [Snowflake](https://www.snowflake.com)
