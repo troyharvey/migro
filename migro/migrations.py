@@ -80,11 +80,12 @@ class MigrationRepository:
             migrations.append(migration)
         return migrations
 
-    def apply(self, migration: Migration):
+    def apply(self, migration: Migration) -> str:
         sql = migration.sql()
         if sql:
             self.db.execute(sql)
         self._log_migration(migration)
+        return sql
 
     def create_migrations_table(self):
         self.db.create_migrations_table()

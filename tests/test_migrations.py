@@ -38,7 +38,7 @@ class TestMigrationRepository:
 
         # Add SQL statement to migration file
         with open(migration_file, "w") as f:
-            f.write("CREATE TABLE attribution(foo INT);")
+            f.write("CREATE TABLE attribution(foo TEXT);")
 
         # Does the migration show up in the file listing?
         for f in migrations_repo._get_migration_files():
@@ -47,7 +47,8 @@ class TestMigrationRepository:
         # Test applying the migration
         for m in migrations_repo.all():
             assert m.file_path.endswith("_create_attribution_table.sql")
-            migrations_repo.apply(m)
+            sql = migrations_repo.apply(m)
+            assert sql == "CREATE TABLE attribution(foo TEXT);"
 
         # There should be no migration left to apply
         for m in migrations_repo.all():

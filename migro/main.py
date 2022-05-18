@@ -34,11 +34,9 @@ def up(pretend, limit, dbt_profile):
 
         click.echo(click.style(f"Migrating: {migration.file_path}", fg="yellow"))
 
-        sql = migration.sql()
-        click.echo(f"— {sql}")
-
         if not pretend:
-            migrations_repo.apply(migration)
+            sql = migrations_repo.apply(migration)
+            click.echo(f"— {sql}")
             click.echo(click.style(f"Migrated:  {migration.file_path}", fg="green"))
 
         applied += 1
