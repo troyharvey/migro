@@ -107,7 +107,7 @@ class RedshiftDatabase(Database):
     """
 
     def _get_connection(self):
-        return psycopg2.connect(
+        connection = psycopg2.connect(
             dbname=self.dbname,
             user=self.user,
             password=self.password,
@@ -115,6 +115,8 @@ class RedshiftDatabase(Database):
             port=self.port,
             cursor_factory=psycopg2.extras.DictCursor,
         )
+        connection.autocommit = True
+        return connection
 
     def create_migrations_table(self):
         self.execute(self.MIGRATIONS_TABLE_SQL)
