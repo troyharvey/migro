@@ -4,13 +4,19 @@
 
         pip install --editable .['dev']
 
+1. Run migro
+
+        migro --help
+
+## Test in a dbt Project
+
 1. Build a distribution wheel.
 
         python setup.py bdist_wheel
 
 1. Install the wheel in a dbt project and test the changes.
 
-        pip install ~/Projects/migro/dist/migro-0.0.4-py3-none-any.whl --force-reinstall
+        pip install ~/Projects/migro/dist/migro-0.x.y-py3-none-any.whl --force-reinstall
 
 ## Tagging a Release
 
