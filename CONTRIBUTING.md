@@ -2,7 +2,7 @@
 
 1. Install Python dependencies.
 
-        pip install --editable .['dev']
+        pip install --editable '.[dev]'
 
 1. Run migro
 
