@@ -1,22 +1,23 @@
 [project]
 name = "migro"
-version = "0.3.0"
+version = "0.4.0"
 authors = [{ name = "Troy Harvey", email = "troyharvey@gmail.com" }]
+license = {file = "LICENSE"}
 description = "Data Warehouse migrations for dbt."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 
 dependencies = [
-  "Click",
-  "Jinja2",
-  "psycopg2",
-  "pyyaml",
-  "snowflake-connector-python",
-  "sqlparse",
+  "Click >= 8.1.0",
+  "Jinja2 >= 3.1.0",
+  "psycopg2 >= 2.9.1",
+  "pyyaml >= 6.0.1",
+  "snowflake-connector-python >= 3.10.0",
+  "sqlparse >= 0.5.0",
 ]
 
 [project.optional-dependencies]
-dev = ["black", "pytest-cov", "pytest", "ruff", "twine"]
+dev = ["pytest-cov >= 5.0.0", "pytest >= 8.2.1", "ruff >= 0.4.4", "twine >= 5.1.0"]
 
 [project.urls]
 "Homepage" = "https://github.com/troyharvey/migro"
