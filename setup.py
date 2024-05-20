@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='migro',
-    version='0.3.0',
+    version='0.4.0',
     description='Data Warehouse migrations for dbt.',
     author='Troy Harvey',
     author_email='troyharvey@gmail.com',
@@ -28,7 +28,7 @@ setup(
     ],
     extras_require={
         'dev': [
-            'black',
+            'ruff',
             'pytest',
             'pytest-cov',
             'twine',

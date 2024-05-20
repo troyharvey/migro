@@ -14,7 +14,9 @@ class TestMigrationRepository:
         except Exception:
             pass
 
-        for f in glob.glob(os.path.join(migrations.MIGRATION_FILE_PATH, "*.sql")):
+        for f in glob.glob(
+            os.path.join("./", migrations.DEFAULT_MIGRATION_DIRECTORY, "*.sql")
+        ):
             os.remove(f)
 
     def teardown_class(self):
@@ -23,11 +25,13 @@ class TestMigrationRepository:
         except Exception:
             pass
 
-        for f in glob.glob(os.path.join(migrations.MIGRATION_FILE_PATH, "*.sql")):
+        for f in glob.glob(
+            os.path.join("./", migrations.DEFAULT_MIGRATION_DIRECTORY, "*.sql")
+        ):
             os.remove(f)
 
     def test_migrations_flow(self):
-        migrations_repo = migrations.MigrationRepository("sqlite_profile")
+        migrations_repo = migrations.MigrationRepository(profile="sqlite_profile")
 
         # Test setting up migrations log table
         migrations_repo.create_migrations_table()
@@ -55,7 +59,7 @@ class TestMigrationRepository:
             assert m.applied_at is not None
 
         # Force migrations file system out of sync with migrations table
-        os.rename(migration_file, f"{migrations.MIGRATION_FILE_PATH}/foo.sql")
+        os.rename(migration_file, f"{migrations.DEFAULT_MIGRATION_DIRECTORY}/foo.sql")
         with pytest.raises(
             Exception,
             match="Migrations table out of sync with migrations on the filesystem.",
@@ -64,8 +68,13 @@ class TestMigrationRepository:
 
 
 class TestMigration:
+    DIRECTORY = f"./{migrations.DEFAULT_MIGRATION_DIRECTORY}"
+
     def setup_method(self):
-        with open(f"{migrations.MIGRATION_FILE_PATH}/test.sql", "w") as f:
+        if not os.path.exists(self.DIRECTORY):
+            os.makedirs(self.DIRECTORY)
+
+        with open(f"{self.DIRECTORY}/test.sql", "w") as f:
             f.write(
                 """
                 -- This comment should be removed when sql is rendered
@@ -74,13 +83,13 @@ class TestMigration:
             )
 
     def teardown_method(self):
-        try:
-            os.remove(f"{migrations.MIGRATION_FILE_PATH}/test.sql")
-        except Exception:
-            pass
+        for f in glob.glob(
+            os.path.join("./", migrations.DEFAULT_MIGRATION_DIRECTORY, "*.sql")
+        ):
+            os.remove(f)
 
     def test_migrations_path_constant(self):
-        assert migrations.MIGRATION_FILE_PATH == "./migrations"
+        assert migrations.DEFAULT_MIGRATION_DIRECTORY == "migrations"
 
     def test_password(self):
         m = migrations.Migration()
@@ -89,7 +98,31 @@ class TestMigration:
         assert re.match(PASSWORD_REGEX, password)
 
     def test_sql(self):
-        m = migrations.Migration()
-        m.file_path = "test.sql"
+        m = migrations.Migration(file_path="test.sql")
+        sql = m.sql()
+        assert re.match(f"^select '{PASSWORD_REGEX}' as pw;$", sql)
+
+
+class TestMigrationWithCustomDirectory:
+    DIRECTORY = "./migrations_snowflake"
+
+    def setup_method(self):
+        if not os.path.exists(self.DIRECTORY):
+            os.makedirs(self.DIRECTORY)
+
+        with open(f"{self.DIRECTORY}/test.sql", "w") as f:
+            f.write(
+                """
+                -- This comment should be removed when sql is rendered
+                select '{{password}}' as pw;
+                """
+            )
+
+    def teardown_method(self):
+        for f in glob.glob(os.path.join("./", self.DIRECTORY, "*.sql")):
+            os.remove(f)
+
+    def test_sql(self):
+        m = migrations.Migration(file_path="test.sql", directory=self.DIRECTORY)
         sql = m.sql()
         assert re.match(f"^select '{PASSWORD_REGEX}' as pw;$", sql)

@@ -24,7 +24,7 @@ def test_make():
 def test_up_pretend():
     runner = CliRunner()
     result = runner.invoke(
-        main.up, ["--pretend", "--limit=1", "--dbt-profile=sqlite_profile"]
+        main.up, ["--pretend", "--limit=1", "--profile=sqlite_profile"]
     )
     assert result.exit_code == 0
     assert "Migrating:" in result.output
@@ -33,13 +33,13 @@ def test_up_pretend():
 
 def test_up():
     runner = CliRunner()
-    result = runner.invoke(main.up, ["--limit=1", "--dbt-profile=sqlite_profile"])
+    result = runner.invoke(main.up, ["--limit=1", "--profile=sqlite_profile"])
     assert result.exit_code == 0
     assert "Migrating:" in result.output
     assert "_add_user_tharvey.sql" in result.output
     assert "Migrated:" in result.output
 
-    result = runner.invoke(main.up, ["--dbt-profile=sqlite_profile"])
+    result = runner.invoke(main.up, ["--profile=sqlite_profile"])
     assert result.exit_code == 0
     assert "Migrating:" in result.output
     assert "_add_user_zharvey.sql" in result.output
