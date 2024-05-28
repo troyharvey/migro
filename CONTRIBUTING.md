@@ -24,7 +24,7 @@
 
 ## Tagging a Release
 
-1. Add a [pypi.org API token](https://packaging.python.org/en/latest/specifications/pypirc/#using-a-pypi-token) to `/.pypirc`
+1. Add a [pypi.org API token](https://packaging.python.org/en/latest/specifications/pypirc/#using-a-pypi-token) to `~/.pypirc`
 1. Bump the version number in `setup.py`
 1. Build a distribution wheel.
 
